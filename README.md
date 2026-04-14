@@ -3,48 +3,6 @@
 ## 🚀 Overview
 
 This project implements a **Retrieval-Augmented Generation (RAG)** based Question Answering API using FastAPI.
-## 🏗️ Architecture Diagram
-
-```mermaid
-(graph TD
-    %% Define Styles
-    classDef user fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
-    classDef api fill:#fff3e0,stroke:#ff9800,stroke-width:2px;
-    classDef process fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px;
-    classDef db fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
-    classDef llm fill:#ffebee,stroke:#f44336,stroke-width:2px;
-
-    User((User)):::user
-
-    subgraph "1. Document Upload Flow"
-        UploadAPI["FastAPI POST /upload"]:::api
-        Extract["Extract Text (PyMuPDF)"]:::process
-        Chunk["Chunk Text (300 words)"]:::process
-        EmbedDoc["Generate Embeddings (MiniLM)"]:::process
-        FAISSDoc[("FAISS Vector Store\n& Document Store")]:::db
-        
-        User -- Uploads PDF/TXT --> UploadAPI
-        UploadAPI -- Background Task --> Extract
-        Extract --> Chunk
-        Chunk --> EmbedDoc
-        EmbedDoc --> FAISSDoc
-    end
-
-    subgraph "2. Query & Retrieval Flow"
-        QueryAPI["FastAPI POST /query"]:::api
-        EmbedQuery["Embed Question (MiniLM)"]:::process
-        Search["Similarity Search (k=3)"]:::process
-        Gemini["Google Gemini LLM"]:::llm
-        
-        User -- Asks Question --> QueryAPI
-        QueryAPI --> EmbedQuery
-        EmbedQuery -- Vector Search --> FAISSDoc
-        FAISSDoc -- Returns Top 3 Chunks --> Search
-        Search -- Passes Context & Prompt --> Gemini
-        Gemini -- Generates Answer --> QueryAPI
-        QueryAPI -- Returns JSON Response --> User
-    end)
-
 
 The system allows users to:
 
